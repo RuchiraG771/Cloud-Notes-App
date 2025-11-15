@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cloud Notes App</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #dfe9f3, #ffffff);
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    width: 90%;
+    max-width: 700px;
+    margin: 40px auto;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+
+  h2 {
+    text-align: center;
+    font-size: 28px;
+    color: #323f4b;
+  }
+
+  textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    outline: none;
+    resize: none;
+    box-shadow: inset 0 0 4px rgba(0,0,0,0.1);
+  }
+
+  button {
+    margin-top: 12px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  button:hover {
+    background: #1e40af;
+  }
+
+  h3 {
+    margin-top: 30px;
+    color: #1f2937;
+  }
+
+  .note-box {
+    background: #f1f5f9;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    font-size: 17px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>🌥 Cloud Notes App</h2>
+
+  <textarea id="note" rows="3" placeholder="Write something..."></textarea>
+  <button onclick="saveNote()">+ Add Note</button>
+
+  <h3>Your Notes</h3>
+  <div id="list"></div>
+</div>
+
+<!-- Firebase compat version for simple HTML -->
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+  apiKey: "AIzaSyDVAqgOQGKvi7EoS0L82c1m8ppIZGZ4SEA",
+  authDomain: "cloud-notes-app-2f586.firebaseapp.com",
+  projectId: "cloud-notes-app-2f586",
+  storageBucket: "cloud-notes-app-2f586.firebasestorage.app",
+  messagingSenderId: "383040504414",
+  appId: "1:383040504414:web:c22d947b385368c307aacf",
+  measurementId: "G-7LP2M5TKLH"
+};
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  function saveNote() {
+    let text = document.getElementById("note").value.trim();
+    if (!text) return;
+
+    db.collection("notes").add({ content: text });
+    document.getElementById("note").value = "";
+  }
+
+  db.collection("notes").onSnapshot((snap) => {
+    let output = "";
+    snap.forEach((doc) => {
+      output += `<div class="note-box">${doc.data().content}</div>`;
+    });
+    document.getElementById("list").innerHTML = output;
+  });
+</script>
+
+</body>
+</html>
